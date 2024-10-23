@@ -5,6 +5,43 @@ import { render, html } from "https://cdn.jsdelivr.net/npm/lit-html@3/+esm";
 
 const fileInput = document.getElementById("fileInput");
 const controls = document.getElementById("controls");
+const cards=document.querySelectorAll(".card");
+const DescriptionBox=document.getElementById("description-box");
+
+const values={
+
+  "author":{
+    title:'Co-authors',
+    description:'"Coauthors" presents a graph visualizing the collaborative relationships between authors and co-authors in Arxiv papers focused on Large Language Models (LLMs), highlighting key contributors and their research networks.'
+  },
+
+  "rbc":{
+    title:'Religion by Country',
+    description:'"Religion by Country" displays a network graph that explores the distribution and relationships of religions practiced across different countries, offering insights into cultural and religious diversity worldwide.'
+  },
+
+  "flight":{
+
+    title:'Flights by Airport 2023',
+    description:'Analyze the network to gain insights into flights arriving at a specific airport.'
+  }
+
+}
+
+cards.forEach((card)=>{
+
+  card.addEventListener("click",()=>{
+
+    DescriptionBox.classList.remove("d-none");
+    const val=card.getAttribute("data-card");
+    const title=values[val].title;
+    const description=values[val].description;
+    // console.log(title," ",description);
+    document.getElementById("title").innerHTML=title;
+    document.getElementById("description").innerHTML=description;
+  })
+})
+
 let data, nodeLinks;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,6 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleFileUpload(event) {
   const file = event.target.files[0];
+  if(!DescriptionBox.classList.contains('d-none')){
+      DescriptionBox.classList.add('d-none');
+  }
+  
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => processCSVData(e.target.result);
