@@ -5,42 +5,58 @@ import { render, html } from "https://cdn.jsdelivr.net/npm/lit-html@3/+esm";
 
 const fileInput = document.getElementById("fileInput");
 const controls = document.getElementById("controls");
-const cards=document.querySelectorAll(".card");
-const DescriptionBox=document.getElementById("description-box");
+const $DescriptionBox=document.getElementById("description-box");
+const $demos = document.getElementById("demos");
 
-const values={
+let demosArray;
+let clickedCardId='';
 
-  "author":{
-    title:'Co-authors',
-    description:'"Coauthors" presents a graph visualizing the collaborative relationships between authors and co-authors in Arxiv papers focused on Large Language Models (LLMs), highlighting key contributors and their research networks.'
-  },
+function handleCardClick(event) {
+      const target = event.currentTarget; // Get the clicked card element
+      const index = target.getAttribute('data-index'); // Get the index from the data attribute
+      clickedCardId=index;
+      // Retrieve the card details from demosArray using index
+      const demo = demosArray[index]; // Access the corresponding demo object
+      const title = demo.title; // Get the title
+      const description = demo.description; // Get the description
 
-  "rbc":{
-    title:'Religion by Country',
-    description:'"Religion by Country" displays a network graph that explores the distribution and relationships of religions practiced across different countries, offering insights into cultural and religious diversity worldwide.'
-  },
+      // Log the title and description or perform any desired actions
+      console.log(`Card clicked: ${title}`);
+      console.log(`Description: ${description}`);
 
-  "flight":{
-
-    title:'Flights by Airport 2023',
-    description:'Analyze the network to gain insights into flights arriving at a specific airport.'
+      $DescriptionBox.classList.remove('d-none');
+      document.querySelector('#title').textContent=title;
+      document.querySelector('#description').textContent=description;
   }
 
-}
+fetch("config.json")
+          .then((res) => res.json())
+          .then(data => {
+              demosArray = data.demos;
+              const demoHTML = demosArray.map((demo,index) => {
+                  return html`
+                      <div class="col py-3">
+                          <a class="demo card h-100 text-decoration-none" data-index="${index}" href="${demo.href}">
+                              <div class="card-body">
+                                  <h5 class="card-title">${demo.title}</h5>
+                                  <p class="card-text">${demo.overview}</p>
+                              </div>
+                          </a>
+                      </div>
+                  `;
+              });
 
-cards.forEach((card)=>{
+              render(demoHTML, $demos);
+            
+            const demoCards = $demos.querySelectorAll('.demo'); // Select all card links
+            demoCards.forEach(card => {
+                card.addEventListener('click', handleCardClick); // Attach the event listener
+            });
+          })
+          .catch(error => {
+              console.error('Error fetching config.json:', error); // Handle any errors
+          });
 
-  card.addEventListener("click",()=>{
-
-    DescriptionBox.classList.remove("d-none");
-    const val=card.getAttribute("data-card");
-    const title=values[val].title;
-    const description=values[val].description;
-    // console.log(title," ",description);
-    document.getElementById("title").innerHTML=title;
-    document.getElementById("description").innerHTML=description;
-  })
-})
 
 let data, nodeLinks;
 
@@ -81,6 +97,8 @@ function processCSVData(csvContent) {
 
 const nodeColor = (d) => (d.key == "source" ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)");
 
+
+
 function renderControls(headers) {
   headers = headers.filter((d) => d.trim());
   const controlsTemplate = html`
@@ -104,7 +122,7 @@ function renderControls(headers) {
       <div class="col-md-2">
         <label for="metricSelect" class="form-label">Metric</label>
         <select id="metricSelect" name="metric" class="form-select">
-          <option selected value="">Count</option>
+          <option selected value="Count">Count</option>
           ${headers.map((header) => html`<option value="${header}">${header}</option>`)}
         </select>
       </div>
@@ -121,14 +139,24 @@ function renderControls(headers) {
   render(controlsTemplate, controls);
   updateNetwork();
 
+
   // Add event listener for the range input
   const thresholdRange = document.getElementById("thresholdRange");
   const thresholdValue = document.getElementById("thresholdValue");
   thresholdRange.addEventListener("input", (e) => {
     thresholdValue.textContent = `${Math.round(e.target.value * 100)}%`;
     drawNetwork();
+    updateURL(); // Call updateURL when threshold changes
   });
-}
+
+  // Add event listeners for the dropdowns to update the URL when changed
+  const dropdowns = ['sourceSelect', 'targetSelect', 'metricSelect'];
+  dropdowns.forEach(id => {
+    document.getElementById(id).addEventListener('change', updateURL);
+  });
+
+
+  // Function to update the URL based on the selected values and clicked card
 
 controls.addEventListener("change", (e) => {
   if (e.target.id == "sourceSelect" || e.target.id == "targetSelect" || e.target.id == "metricSelect") updateNetwork();
@@ -144,7 +172,7 @@ function updateNetwork() {
     nodeLinks.nodes.forEach((node) => (node.value = JSON.parse(node.id)[1]));
     nodeLinks.links.sort((a, b) => b.metric - a.metric);
     nodeLinks.links.forEach((link, index) => (link._rank = index));
-    console.log(nodeLinks.links);
+    // console.log(nodeLinks.links);
   }
   drawNetwork();
 }
@@ -188,3 +216,10 @@ function brush(nodes) {
   `;
   render(listGroupTemplate, document.getElementById("selection"));
 }
+
+}
+
+
+
+
+
