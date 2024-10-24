@@ -98,7 +98,6 @@ function processCSVData(csvContent) {
 const nodeColor = (d) => (d.key == "source" ? "rgba(255,0,0,0.5)" : "rgba(0,0,255,0.5)");
 
 
-
 function renderControls(headers) {
   headers = headers.filter((d) => d.trim());
   const controlsTemplate = html`
@@ -216,6 +215,7 @@ function brush(nodes) {
   `;
   render(listGroupTemplate, document.getElementById("selection"));
 }
+
 
 }
 
