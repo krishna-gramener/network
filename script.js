@@ -216,10 +216,57 @@ function brush(nodes) {
   render(listGroupTemplate, document.getElementById("selection"));
 }
 
-
+// ------------------------------------------------URL-----------------------------------
+// Call this function when the page loads
+function updateURL() {
+    
+  const source = document.getElementById("sourceSelect").value;
+  const target = document.getElementById("targetSelect").value;
+  const metric = document.getElementById("metricSelect").value;
+  const threshold = document.getElementById("thresholdRange").value;
+  
+  const url = new URL(window.location.origin + window.location.pathname);
+  url.searchParams.set('source', source);
+  url.searchParams.set('target', target);
+  url.searchParams.set('metric', metric);
+  url.searchParams.set('threshold', threshold);
+      // console.log(clickedCardId);
+  url.searchParams.set('card', clickedCardId); // Set the clicked card ID
+  
+  window.history.pushState({}, '', url); // Update the browser's URL without reloading
 }
 
+  // Initial call to update the URL when controls are rendered
+  updateURL();
+}
 
+function setValuesFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const source = urlParams.get('source');
+  const target = urlParams.get('target');
+  const metric = urlParams.get('metric');
+  const threshold = urlParams.get('threshold');
+  const card = urlParams.get('card');
+  console.log(target);
+  
+  if (source) document.getElementById("sourceSelect").value = source;
+  if (target) document.getElementById("targetSelect").value = target;
+  if (metric) document.getElementById("metricSelect").value = metric;
+  if (threshold) document.getElementById("thresholdRange").value = threshold;
 
+  console.log(source,target,metric,threshold,card)
+  // Trigger the event to update the network or display results based on selected values
+  updateNetwork();
 
+  // Simulate card click based on the URL's card parameter
+  if (card) {
+    
+      const clickedCard = Array.from(cards).find(c => c.getAttribute("data-card") === card);
+      if (clickedCard) {
+        handleDemoClick(); // Call the function to handle the click
+      }
+  }
+}
+// window.onload = setValuesFromURL;
+window.addEventListener('load', setValuesFromURL);
 
