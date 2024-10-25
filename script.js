@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleFileUpload(event) {
   const file = event.target.files[0];
-  if(!DescriptionBox.classList.contains('d-none')){
-      DescriptionBox.classList.add('d-none');
+  if(!$DescriptionBox.classList.contains('d-none')){
+      $DescriptionBox.classList.add('d-none');
   }
   
   if (file) {
