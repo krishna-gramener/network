@@ -126,6 +126,11 @@ function renderControls(headers) {
     thresholdValue.textContent = `${Math.round(e.target.value * 100)}%`;
     drawNetwork();
   });
+}
+
+controls.addEventListener("change", (e) => {
+  if (e.target.id == "sourceSelect" || e.target.id == "targetSelect" || e.target.id == "metricSelect") updateNetwork();
+});
 
   function updateNetwork() {
     const source = document.getElementById("sourceSelect").value;
@@ -193,5 +198,3 @@ function renderControls(headers) {
   `;
     render(listGroupTemplate, document.getElementById("selection"));
   }
-
-}
