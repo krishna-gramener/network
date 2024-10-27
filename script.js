@@ -16,11 +16,12 @@ const descriptionBox = document.getElementById("description-box");
 const demosDiv = document.getElementById("demos");
 
 let demosArray = [];
-demosDiv.addEventListener('click', handleCardClick);
 
-function handleCardClick(event) {
+async function handleCardClick(event) {
   const target = event.target.closest('.demo');
   if (!target) return;
+  event.preventDefault();
+  processCSVData(await fetch(target.href).then((r) => r.text()));
   const index = target.getAttribute('data-index');
   descriptionBox.classList.remove('d-none');
   document.getElementById('title').textContent = demosArray[index].title;
@@ -40,26 +41,23 @@ const fetchAndRenderDemos = async () => {
             <div class="card-body">
               <h5 class="card-title">${demo.title}</h5>
               <p class="card-text">${demo.overview}</p>
-            </div>
-          </a>
+              </div>
+              </a>
         </div>
-      `), demosDiv
+        `), demosDiv
     );
 
-    demosDiv.querySelectorAll('.demo').forEach(card =>
-      card.addEventListener('click', handleCardClick));
   } catch (error) {
     console.error('Error fetching config.json:', error);
   }
 };
 
-fetchAndRenderDemos();
-
 let data, nodeLinks;
 
 document.addEventListener("DOMContentLoaded", () => {
+  fetchAndRenderDemos();
   fileInput.addEventListener("change", handleFileUpload);
-  document.getElementById("demos").addEventListener("click", handleDemoClick);
+  demosDiv.addEventListener('click', handleCardClick);
 });
 
 function handleFileUpload(event) {
@@ -71,14 +69,6 @@ function handleFileUpload(event) {
     reader.readAsText(file);
   } else {
     controls.innerHTML = "";
-  }
-}
-
-async function handleDemoClick(event) {
-  const demoLink = event.target.closest(".demo");
-  if (demoLink) {
-    event.preventDefault();
-    processCSVData(await fetch(demoLink.href).then((r) => r.text()));
   }
 }
 
