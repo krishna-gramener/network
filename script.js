@@ -69,7 +69,7 @@ function renderControls(headers) {
         <label for="metricSelect" class="form-label">Metric</label>
         <select id="metricSelect" name="metric" class="form-select">
           <option selected value="">Count</option>
-          ${headers.map((header) => html` <option value="${header}">${header}</option> `)}
+          ${headers.map((header) => html`<option value="${header}">${header}</option>`)}
         </select>
       </div>
       <div class="col-md-6">
@@ -142,7 +142,9 @@ function brush(nodes) {
             style="background-color: ${nodeColor(node)}"
           >
             ${node.value || "-"}
-            <span class="badge bg-${node.key === "source" ? "danger" : "primary"} rounded-pill">${cols[node.key]}</span>
+            <span class="badge bg-${node.key === "source" ? "danger" : "primary"} rounded-pill">
+              ${cols[node.key]}
+            </span>
           </li>
         `
       )}
