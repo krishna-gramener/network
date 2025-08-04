@@ -23,7 +23,7 @@ jobs:
         uses: krishna-gramener/github-screenshots@v1.1
         with:
           url: http://localhost:5000
-          output: screenshot.webp
+          output: ss.webp
           
       - name: Commit screenshot
         run: |
