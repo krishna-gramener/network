@@ -20,7 +20,7 @@ jobs:
           node-version: '18'
 
       - name: Run Screenshot Generator
-        uses: krishna-gramener/github-screenshots@v1.1
+        uses: krishna-gramener/github-screenshots@v1.0
         with:
           url: http://localhost:5000
           output: ss.webp
