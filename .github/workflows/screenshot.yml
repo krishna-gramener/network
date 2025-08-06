@@ -22,8 +22,7 @@ jobs:
       - name: Run Screenshot Generator
         uses: krishna-gramener/github-screenshots@v1.0
         with:
-          url: http://localhost:5000,http://localhost:8080,http://localhost:8081
-          output: ss1.webp,ss2.jpg,ss3.png
+          screenshots: "/=ss1.webp"
           
       - name: Commit screenshot
         run: |
