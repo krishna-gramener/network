@@ -22,7 +22,7 @@ jobs:
       - name: Run Screenshot Generator
         uses: krishna-gramener/github-screenshots@v1.0
         with:
-          screenshots: "/=ss1.webp"
+          screenshots: "/=screenshots/ss1.webp"
           
       - name: Commit screenshot
         run: |
